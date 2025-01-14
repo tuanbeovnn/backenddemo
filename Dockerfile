@@ -20,8 +20,8 @@ COPY --from=build /opt/app/target/*.jar /run/app.jar
 ENV PORT 8083
 EXPOSE $PORT
 
-# Set the spring.config.location environment variable to point to the mounted config file
-ENV SPRING_CONFIG_LOCATION=file:/config/application.properties
+# Set spring config location for external application.properties
+ENV SPRING_CONFIG_LOCATION=optional:file:/config/application.properties
 
-# Start the application with the specified port and config location
-ENTRYPOINT ["java", "-jar", "-Dserver.port=${PORT}", "-Dspring.config.location=${SPRING_CONFIG_LOCATION}", "/run/app.jar"]
+# Start the application with the specified port
+ENTRYPOINT ["java", "-jar", "-Xmx1024M", "-Dserver.port=${PORT}", "-Dspring.config.location=${SPRING_CONFIG_LOCATION}", "/run/app.jar"]
