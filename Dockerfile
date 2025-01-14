@@ -13,9 +13,6 @@ RUN mvn install -DskipTests=true
 ## Run Stage ##
 FROM openjdk:17-alpine
 
-# Set the timezone for the container (optional)
-RUN unlink /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
-
 # Copy the JAR file from the build stage
 COPY --from=build /src/target/k8s-0.0.1-SNAPSHOT.jar /run/k8s-0.0.1-SNAPSHOT.jar
 
