@@ -13,15 +13,15 @@ RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
 # Docker Runtime Stage
 FROM openjdk:17-alpine
 
-# Copy the built jar from the build stage
-COPY --from=build /opt/app/target/*.jar app.jar
-
-# Copy the application.properties file into the container
-COPY ./src/main/resources/application.properties /config/application.properties
+# Copy the built jar from the build stage with the short name 'app.jar'
+COPY --from=build /opt/app/target/*.jar /run/app.jar
 
 # Set the environment variable for the port and expose it
 ENV PORT 8083
 EXPOSE $PORT
 
+# Set the spring.config.location environment variable to point to the mounted config file
+ENV SPRING_CONFIG_LOCATION=file:/config/application.properties
+
 # Start the application with the specified port and config location
-ENTRYPOINT ["java", "-jar", "-Xmx1024M", "-Dserver.port=${PORT}", "-Dspring.config.location=file:/config/application.properties", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dserver.port=${PORT}", "-Dspring.config.location=${SPRING_CONFIG_LOCATION}", "/run/app.jar"]
