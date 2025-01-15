@@ -19,4 +19,4 @@ COPY --from=build src/target/k8s-0.0.1-SNAPSHOT.jar /run/k8s-0.0.1-SNAPSHOT.jar
 # Expose the port for the application
 EXPOSE 8083
 
-ENTRYPOINT java -jar /run/k8s-0.0.1-SNAPSHOT.jar
+ENTRYPOINT java -jar /run/k8s-0.0.1-SNAPSHOT.jar --spring.config.location=/run/src/main/resources/application.properties
