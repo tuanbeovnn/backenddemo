@@ -13,11 +13,17 @@ RUN mvn install -DskipTests=true
 ## Run Stage ##
 FROM openjdk:17-alpine
 
+# Set working directory for the run stage
+WORKDIR /run
+
 # Copy the JAR file from the build stage
 COPY --from=build /src/target/k8s-0.0.1-SNAPSHOT.jar /run/k8s-0.0.1-SNAPSHOT.jar
 
-# Expose the port for the application
-EXPOSE 8080
+# Copy application.properties to the /run directory
+COPY --from=build /src/src/main/resources/application.properties /run/application.properties
 
-# Set the application properties file location (in case using an external volume or configmap)
-ENTRYPOINT java -jar /run/k8s-0.0.1-SNAPSHOT.jar --spring.config.location=file:/run/src/main/resources/application.properties
+# Expose the port for the application
+EXPOSE 8083
+
+# Set the entry point with the correct configuration location
+ENTRYPOINT ["java", "-jar", "/run/k8s-0.0.1-SNAPSHOT.jar", "--spring.config.location=file:/run/application.properties"]
