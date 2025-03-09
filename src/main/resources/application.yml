@@ -1,0 +1,30 @@
+security:
+    basic:
+        enabled: false
+server:
+    error:
+        whitelabel:
+            enabled: false
+    port: 8083
+spring:
+    application:
+        name: k8s
+    datasource:
+        driverClassName: com.mysql.cj.jdbc.Driver
+        password: P@ssword*123
+        url: jdbc:mysql://code4fun.xyz:3307/k8sdemo?jdbcCompliantTruncation=false
+        username: root
+    jpa:
+        hibernate:
+            ddl-auto: create
+        open-in-view: false
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
+                jdbc:
+                    lob:
+                        non_contextual_creation: true
+        show-sql: false
+    sql:
+        init:
+            platform: mysql

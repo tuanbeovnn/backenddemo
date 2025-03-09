@@ -1,5 +1,6 @@
-package com.laptrinh.k8s;
+package com.laptrinh.k8s.repositories;
 
+import com.laptrinh.k8s.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
