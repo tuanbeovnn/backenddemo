@@ -20,7 +20,7 @@ WORKDIR /run
 COPY --from=build /src/target/k8s-0.0.1-SNAPSHOT.jar /run/k8s-0.0.1-SNAPSHOT.jar
 
 # Copy application.properties to the /run directory
-COPY --from=build /src/src/main/resources/application.properties /run/application.properties
+COPY --from=build /src/src/main/resources/application.yml /run/application.yml
 
 # Expose the port for the application
 EXPOSE 8083
