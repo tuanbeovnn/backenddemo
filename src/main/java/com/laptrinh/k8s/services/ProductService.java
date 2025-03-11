@@ -9,6 +9,7 @@ import com.laptrinh.k8s.converter.Converter;
 import com.laptrinh.k8s.dtos.ProductDto;
 import com.laptrinh.k8s.entities.Product;
 import com.laptrinh.k8s.repositories.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private static final Logger log = LogManager.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final ElasticsearchClient elasticsearchClient;
-
-
-    public ProductService(ProductRepository productRepository, ElasticsearchClient elasticsearchClient) {
-        this.productRepository = productRepository;
-        this.elasticsearchClient = elasticsearchClient;
-    }
 
     public List<ProductDto> getProductsWithSearch(String keyword) throws IOException {
         SearchResponse<ProductDto> searchResponse = elasticsearchClient.search(s -> {
