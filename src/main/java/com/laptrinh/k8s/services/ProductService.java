@@ -28,6 +28,20 @@ public class ProductService {
     private final ElasticsearchClient elasticsearchClient;
     private final ProductElasticRepository productElasticRepository;
 
+    public Product saveProduct(Product product) {
+        Product savedProduct = productRepository.save(product);
+        ProductElastic elasticProduct = new ProductElastic(
+                savedProduct.getId(),
+                savedProduct.getName(),
+                savedProduct.getPrice(),
+                savedProduct.getTitle(),
+                savedProduct.getShortDescription(),
+                savedProduct.getDescription()
+        );
+        productElasticRepository.save(elasticProduct);
+        return savedProduct;
+    }
+
     public List<ProductDto> getProductsWithSearch(String keyword) throws IOException {
         SearchResponse<ProductDto> searchResponse = elasticsearchClient.search(s -> {
                     s.index("products");
