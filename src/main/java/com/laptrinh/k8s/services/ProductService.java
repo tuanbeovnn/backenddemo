@@ -2,6 +2,7 @@ package com.laptrinh.k8s.services;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.laptrinh.k8s.converter.Converter;
@@ -105,18 +106,18 @@ public class ProductService {
     }
 
     public void syncDatabaseToElasticsearch() {
-//        List<Product> products = productRepository.findAll();
-//        for (Product product : products) {
-//            try {
-//                IndexResponse response = elasticsearchClient.index(i -> i
-//                        .index("products")
-//                        .id(String.valueOf(product.getId()))
-//                        .document(product)
-//                );
-//                System.out.println("Indexed product: " + product.getId() + " Status: " + response.result());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        List<Product> products = productRepository.findAll();
+        for (Product product : products) {
+            try {
+                IndexResponse response = elasticsearchClient.index(i -> i
+                        .index("products")
+                        .id(String.valueOf(product.getId()))
+                        .document(product)
+                );
+                System.out.println("Indexed product: " + product.getId() + " Status: " + response.result());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
