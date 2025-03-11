@@ -104,6 +104,14 @@ public class ProductService {
 
     @Transactional
     public void syncDatabaseToElasticsearchV2() {
+        long count = productElasticRepository.count();
+        if (count > 0) {
+            System.out.println("Elasticsearch already has " + count + " products. Skipping sync.");
+            return;
+        }
+
+        System.out.println("🔄 Syncing database to Elasticsearch...");
+
         List<Product> products = productRepository.findAll();
         List<ProductElastic> elasticProducts = products.stream()
                 .map(product -> new ProductElastic(
