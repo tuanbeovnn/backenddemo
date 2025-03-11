@@ -16,12 +16,15 @@ spring:
         username: root
     jpa:
         hibernate:
-            ddl-auto: create
+            ddl-auto: update
         open-in-view: false
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL8Dialect
                 jdbc:
+                    batch_size: 1000
+                    order_inserts: true
+                    order_updates: true
                     lob:
                         non_contextual_creation: true
         show-sql: false
