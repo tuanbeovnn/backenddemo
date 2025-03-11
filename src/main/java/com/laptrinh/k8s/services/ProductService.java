@@ -2,7 +2,6 @@ package com.laptrinh.k8s.services;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.laptrinh.k8s.converter.Converter;
@@ -91,33 +90,16 @@ public class ProductService {
             return productDtos;
         } catch (ElasticsearchException e) {
             log.error("Elasticsearch query failed: {}", e.getMessage(), e);
-            return List.of(); // Return an empty list in case of failure
+            return List.of();
         } catch (IOException e) {
             log.error("IO Exception in Elasticsearch search: {}", e.getMessage(), e);
             return List.of();
         }
     }
 
-
     public List<ProductDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return Converter.toList(products, ProductDto.class);
-    }
-
-    public void syncDatabaseToElasticsearch() {
-        List<Product> products = productRepository.findAll();
-        for (Product product : products) {
-            try {
-                IndexResponse response = elasticsearchClient.index(i -> i
-                        .index("products")
-                        .id(String.valueOf(product.getId()))
-                        .document(product)
-                );
-                System.out.println("Indexed product: " + product.getId() + " Status: " + response.result());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Transactional
