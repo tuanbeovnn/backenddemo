@@ -6,18 +6,20 @@ import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.laptrinh.k8s.converter.Converter;
+import com.laptrinh.k8s.documents.ProductElastic;
 import com.laptrinh.k8s.dtos.ProductDto;
 import com.laptrinh.k8s.entities.Product;
+import com.laptrinh.k8s.repositories.ProductElasticRepository;
 import com.laptrinh.k8s.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class ProductService {
     private static final Logger log = LogManager.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final ElasticsearchClient elasticsearchClient;
+    private final ProductElasticRepository productElasticRepository;
 
     public List<ProductDto> getProductsWithSearch(String keyword) throws IOException {
         SearchResponse<ProductDto> searchResponse = elasticsearchClient.search(s -> {
@@ -115,5 +118,22 @@ public class ProductService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Transactional
+    public void syncDatabaseToElasticsearchV2() {
+        List<Product> products = productRepository.findAll();
+        List<ProductElastic> elasticProducts = products.stream()
+                .map(product -> new ProductElastic(
+                        product.getId(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getTitle(),
+                        product.getShortDescription(),
+                        product.getDescription()))
+                .toList();
+
+        productElasticRepository.saveAll(elasticProducts);
+        System.out.println("Successfully synced " + elasticProducts.size() + " products to Elasticsearch.");
     }
 }

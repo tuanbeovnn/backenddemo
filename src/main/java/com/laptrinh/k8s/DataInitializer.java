@@ -56,11 +56,17 @@ public class DataInitializer {
                                 .build()
                 ));
 
-                productService.syncDatabaseToElasticsearch();
-
             } else {
                 System.out.println("Database already contains data. Skipping initialization.");
             }
         };
     }
+
+    @Bean
+    CommandLineRunner syncElasticsearch() {
+        return args -> {
+            productService.syncDatabaseToElasticsearchV2();
+        };
+    }
+
 }
