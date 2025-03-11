@@ -31,3 +31,6 @@ spring:
     sql:
         init:
             platform: mysql
+    jackson:
+        serialization:
+          fail-on-empty-beans: false
